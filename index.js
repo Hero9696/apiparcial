@@ -1,14 +1,15 @@
-// index.js
+// Módulos Nativos
+const path = require('path');
 
+// Módulos de NPM
 const express = require('express');
-const { poolPromise } = require('./dbConfig');
-const productoRoutes = require('./routes/producto.routes');
 const cors = require('cors');
-
-// --- NUEVAS IMPORTACIONES PARA SWAGGER ---
 const swaggerUi = require('swagger-ui-express');
 const swaggerJSDoc = require('swagger-jsdoc');
-const path = require('path');
+
+// Módulos Locales
+const { poolPromise } = require('./dbConfig');
+const productoRoutes = require('./routes/producto.routes');;
 
 const app = express();
 const port = process.env.PORT || 3000; 
@@ -22,11 +23,7 @@ const swaggerOptions = {
             version: '1.0.0',
             description: 'Una API simple para gestionar un CRUD de productos, documentada con Swagger.'
         },
-        servers: [
-            {
-                url: `http://localhost:${port}`
-            }
-        ]
+       
     },
     // Le decimos a swagger-jsdoc que busque en nuestros archivos de rutas
     apis: ['./routes/producto.routes.js'] 
