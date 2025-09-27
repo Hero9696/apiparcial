@@ -3,6 +3,7 @@
 const express = require('express');
 const { poolPromise } = require('./dbConfig');
 const productoRoutes = require('./routes/producto.routes');
+const cors = require('cors');
 
 // --- NUEVAS IMPORTACIONES PARA SWAGGER ---
 const swaggerUi = require('swagger-ui-express');
@@ -31,9 +32,12 @@ const swaggerOptions = {
     apis: ['./routes/producto.routes.js'] 
 };
 
+
+
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
 
 // Middleware para parsear el body de las peticiones a JSON
+app.use(cors());
 app.use(express.json());
 
 // --- Lógica para verificar y crear la tabla (esto se queda igual) ---
