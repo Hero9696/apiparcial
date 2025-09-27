@@ -8,7 +8,7 @@ const { sql, poolPromise } = require('../dbConfig');
 const getPeliculas = async (req, res) => {
     try {
         const pool = await poolPromise;
-        const result = await pool.request().query('SELECT * FROM Cartelera');
+        const result = await pool.request().query('SELECT * FROM Cartelera15029');
         res.json(result.recordset);
     } catch (err) {
         res.status(500).send({ message: err.message });
@@ -23,7 +23,7 @@ const getPeliculaById = async (req, res) => {
         const pool = await poolPromise;
         const result = await pool.request()
             .input('imdbID', sql.NVarChar, req.params.imdbID)
-            .query('SELECT * FROM Cartelera WHERE imdbID = @imdbID');
+            .query('SELECT * FROM Cartelera15029 WHERE imdbID = @imdbID');
 
         if (result.recordset.length === 0) {
             return res.status(404).send({ message: 'Película no encontrada.' });
@@ -57,7 +57,7 @@ const createPelicula = async (req, res) => {
             .input('description', sql.NVarChar, description)
             .input('Ubication', sql.NVarChar, Ubication)
             .query(`
-                INSERT INTO Cartelera (imdbID, Title, Year, Type, Poster, Estado, description, Ubication)
+                INSERT INTO Cartelera15029 (imdbID, Title, Year, Type, Poster, Estado, description, Ubication)
                 VALUES (@imdbID, @Title, @Year, @Type, @Poster, @Estado, @description, @Ubication)
             `);
 
@@ -90,7 +90,7 @@ const updatePelicula = async (req, res) => {
             .input('description', sql.NVarChar, description)
             .input('Ubication', sql.NVarChar, Ubication)
             .query(`
-                UPDATE Cartelera SET
+                UPDATE Cartelera15029 SET
                     Title = @Title,
                     Year = @Year,
                     Type = @Type,
@@ -119,7 +119,7 @@ const deletePelicula = async (req, res) => {
         const pool = await poolPromise;
         const result = await pool.request()
             .input('imdbID', sql.NVarChar, req.params.imdbID)
-            .query('DELETE FROM Cartelera WHERE imdbID = @imdbID');
+            .query('DELETE FROM Cartelera15029 WHERE imdbID = @imdbID');
 
         if (result.rowsAffected[0] === 0) {
             return res.status(404).send({ message: 'Película no encontrada para eliminar.' });
@@ -148,7 +148,7 @@ const createBulkPeliculas = async (req, res) => {
 
         for (const p of peliculas) {
             // Aquí podrías añadir una validación más robusta para cada película
-            await request.query`INSERT INTO Cartelera (imdbID, Title, Year, Type, Poster, Estado, description, Ubication) VALUES (${p.imdbID}, ${p.Title}, ${p.Year}, ${p.Type}, ${p.Poster}, ${p.Estado}, ${p.description}, ${p.Ubication})`;
+            await request.query`INSERT INTO Cartelera15029 (imdbID, Title, Year, Type, Poster, Estado, description, Ubication) VALUES (${p.imdbID}, ${p.Title}, ${p.Year}, ${p.Type}, ${p.Poster}, ${p.Estado}, ${p.description}, ${p.Ubication})`;
         }
 
         await transaction.commit();

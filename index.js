@@ -45,9 +45,9 @@ async function setupDatabase() {
 
         // Consulta para verificar y crear la tabla si no existe
         const createTableQuery = `
-            IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Cartelera]') AND type in (N'U'))
+            IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Cartelera15029]') AND type in (N'U'))
             BEGIN
-                CREATE TABLE [dbo].[Cartelera](
+                CREATE TABLE [dbo].[Cartelera15029](
                     [imdbID] NVARCHAR(50) PRIMARY KEY NOT NULL,
                     [Title] NVARCHAR(255) NOT NULL,
                     [Year] NVARCHAR(10),
@@ -57,11 +57,11 @@ async function setupDatabase() {
                     [description] NVARCHAR(MAX),
                     [Ubication] NVARCHAR(100)
                 ); 
-                PRINT '✅ Tabla [Cartelera] creada exitosamente.';
+                PRINT '✅ Tabla [Cartelera15029] creada exitosamente.';
             END
         `;
         await request.query(createTableQuery);
-        console.log('🔍 Verificación de la base de datos completada. La tabla [Cartelera] está lista.');
+        console.log('🔍 Verificación de la base de datos completada. La tabla [Cartelera15029] está lista.');
     } catch (err) {
         console.error('❌ Error al configurar la base de datos:', err);
     }
