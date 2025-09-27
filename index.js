@@ -9,7 +9,7 @@ const swaggerJSDoc = require('swagger-jsdoc');
 
 // Módulos Locales
 const { poolPromise } = require('./dbConfig');
-const productoRoutes = require('./routes/producto.routes');;
+const carteleraRoutes = require('./routes/cartelera.routes');;
 
 const app = express();
 const port = process.env.PORT || 3000; 
@@ -19,14 +19,14 @@ const swaggerOptions = {
     definition: {
         openapi: '3.0.0',
         info: {
-            title: 'API de Productos',
+            title: 'API de Cartelera',
             version: '1.0.0',
-            description: 'Una API simple para gestionar un CRUD de productos, documentada con Swagger.'
+            description: 'Una API para gestionar una cartelera de películas, documentada con Swagger.'
         },
        
     },
     // Le decimos a swagger-jsdoc que busque en nuestros archivos de rutas
-    apis: ['./routes/producto.routes.js'] 
+    apis: ['./routes/cartelera.routes.js'] 
 };
 
 
@@ -38,11 +38,38 @@ app.use(cors());
 app.use(express.json());
 
 // --- Lógica para verificar y crear la tabla (esto se queda igual) ---
-async function setupDatabase() { /* ... tu función setupDatabase ... */ }
+async function setupDatabase() {
+    try {
+        const pool = await poolPromise;
+        const request = pool.request();
+
+        // Consulta para verificar y crear la tabla si no existe
+        const createTableQuery = `
+            IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Cartelera]') AND type in (N'U'))
+            BEGIN
+                CREATE TABLE [dbo].[Cartelera](
+                    [imdbID] NVARCHAR(50) PRIMARY KEY NOT NULL,
+                    [Title] NVARCHAR(255) NOT NULL,
+                    [Year] NVARCHAR(10),
+                    [Type] NVARCHAR(100),
+                    [Poster] NVARCHAR(MAX),
+                    [Estado] BIT NOT NULL DEFAULT 1,
+                    [description] NVARCHAR(MAX),
+                    [Ubication] NVARCHAR(100)
+                ); 
+                PRINT '✅ Tabla [Cartelera] creada exitosamente.';
+            END
+        `;
+        await request.query(createTableQuery);
+        console.log('🔍 Verificación de la base de datos completada. La tabla [Cartelera] está lista.');
+    } catch (err) {
+        console.error('❌ Error al configurar la base de datos:', err);
+    }
+}
 
 // --- RUTAS DE LA API ---
-// Usar las rutas de productos
-app.use('/productos', productoRoutes);
+// Usar las rutas de cartelera
+app.use('/cartelera', carteleraRoutes);
 
 // --- RUTA PARA LA DOCUMENTACIÓN DE SWAGGER ---
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
